@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/hooks/useSession";
+import { toolPath } from "@/lib/tool-url";
 import { PortalShell } from "./PortalShell";
 
 // "inventory-count" -> "Inventory Count", only for a tool whose name did not come back.
@@ -51,11 +52,11 @@ export function EmployeeHome() {
       <ul className="p-tiles" id="tiles">
         {tools.map((slug) => (
           <li key={slug}>
-            {/* Opens the link the admin saved for this tool; tools from before links existed keep their old page. */}
+            {/* /tools/<tool name> forwards to the link the admin saved; tools from before links existed keep their old page. */}
             <a
               className="p-tile"
-              href={links[slug] || `/${slug}.html`}
-              {...(links[slug] && { target: "_blank", rel: "noopener noreferrer" })}
+              href={links[slug] ? toolPath(names[slug] || slug, slug) : `/${slug}.html`}
+              {...(links[slug] && { target: "_blank", rel: "noopener" })}
             >
               <span className="p-tile-name">{names[slug] || pretty(slug)}</span>
             </a>
