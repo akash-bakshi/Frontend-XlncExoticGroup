@@ -1,6 +1,13 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site";
+import { COMPANIES } from "@/lib/companies";
+import { LOGO, SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [{ url: `${SITE_URL}/`, changeFrequency: "monthly", priority: 1 }];
+  const images = [
+    "/assets/video/sd-hero.jpg",
+    LOGO.src,
+    ...COMPANIES.flatMap((company) => (company.logo ? [company.logo.src] : [])),
+  ].map((src) => `${SITE_URL}${src}`);
+
+  return [{ url: `${SITE_URL}/`, changeFrequency: "monthly", priority: 1, images }];
 }

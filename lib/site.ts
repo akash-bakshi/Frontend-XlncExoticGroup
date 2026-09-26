@@ -15,6 +15,13 @@ export const ADDRESS = {
   country: "US",
 };
 
+export const DESCRIPTION =
+  "XLNC Exotic Group is a San Diego venture group that builds, backs, and scales exceptional companies across technology, construction, hospitality, legal, and luxury automotive.";
+
+// Official profiles of the group itself (LinkedIn, Instagram, Google Business, ...). Each URL feeds the
+// schema's sameAs and the footer, so only add profiles the group actually owns.
+export const SOCIAL_PROFILES: { label: string; url: string }[] = [];
+
 export const FONTS_URL =
   "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Jost:wght@300;400;500;600&display=swap";
 
@@ -31,7 +38,9 @@ export const ROUTES = {
 
 export const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  icons: { icon: LOGO.src },
+  applicationName: SITE_NAME,
+  icons: { icon: LOGO.src, apple: LOGO_MARK.src },
+  formatDetection: { telephone: false, email: false, address: false },
 };
 
 export const privateMetadata = (title: string): Metadata => ({

@@ -7,11 +7,20 @@ import { LogoTray } from "@/components/site/LogoTray";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { COMPANIES } from "@/lib/companies";
-import { ADDRESS, baseMetadata, EMAIL, LOGO, PHONE, PHONE_DISPLAY, SITE_NAME, SITE_URL } from "@/lib/site";
+import {
+  ADDRESS,
+  baseMetadata,
+  DESCRIPTION,
+  EMAIL,
+  LOGO,
+  PHONE,
+  PHONE_DISPLAY,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_PROFILES,
+} from "@/lib/site";
 
 const TITLE = "XLNC Exotic Group | San Diego Venture Group — We Build, Back & Scale";
-const DESCRIPTION =
-  "XLNC Exotic Group is a San Diego venture group that builds, backs, and scales exceptional companies across technology, construction, hospitality, legal, and luxury automotive.";
 const SHARE_TITLE = "XLNC Exotic Group — A San Diego Venture Group";
 const SHARE_DESCRIPTION = "We build, back, and scale exceptional companies across six industries.";
 const SHARE_IMAGE = {
@@ -25,13 +34,28 @@ export const metadata: Metadata = {
   ...baseMetadata,
   title: TITLE,
   description: DESCRIPTION,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "business",
   alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  // Set GOOGLE_SITE_VERIFICATION / BING_SITE_VERIFICATION to the tokens from Search Console and Bing Webmaster Tools.
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION && { google: process.env.GOOGLE_SITE_VERIFICATION }),
+    ...(process.env.BING_SITE_VERIFICATION && { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }),
+  },
   openGraph: {
     title: SHARE_TITLE,
     description: SHARE_DESCRIPTION,
     type: "website",
     url: "/",
     siteName: SITE_NAME,
+    locale: "en_US",
     images: [SHARE_IMAGE],
   },
   twitter: {
@@ -39,24 +63,6 @@ export const metadata: Metadata = {
     title: SHARE_TITLE,
     description: SHARE_DESCRIPTION,
     images: [SHARE_IMAGE.url],
-  },
-};
-
-const ORGANIZATION = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}${LOGO.src}`,
-  email: EMAIL,
-  telephone: PHONE,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: ADDRESS.street,
-    addressLocality: ADDRESS.locality,
-    addressRegion: ADDRESS.region,
-    postalCode: ADDRESS.postalCode,
-    addressCountry: ADDRESS.country,
   },
 };
 
@@ -101,12 +107,84 @@ const SECTORS = [
   "Investments & Holdings",
 ];
 
+const ORG_ID = `${SITE_URL}/#organization`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: SITE_NAME,
+      alternateName: ["XLNC Exotic", "XLNC"],
+      url: SITE_URL,
+      description: DESCRIPTION,
+      slogan: "We build, back & scale the exceptional.",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}${LOGO.src}`, width: LOGO.width, height: LOGO.height },
+      image: `${SITE_URL}${SHARE_IMAGE.url}`,
+      email: EMAIL,
+      telephone: PHONE,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: ADDRESS.street,
+        addressLocality: ADDRESS.locality,
+        addressRegion: ADDRESS.region,
+        postalCode: ADDRESS.postalCode,
+        addressCountry: ADDRESS.country,
+      },
+      areaServed: [
+        { "@type": "City", name: "San Diego" },
+        { "@type": "State", name: "California" },
+        { "@type": "Country", name: "United States" },
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "business inquiries",
+        email: EMAIL,
+        telephone: PHONE,
+        areaServed: "US",
+        availableLanguage: "English",
+      },
+      knowsAbout: [...SECTORS, "Venture building", "Venture capital", "Business investment"],
+      subOrganization: COMPANIES.map((company) => ({
+        "@type": "Organization",
+        name: company.name,
+        description: company.description,
+        ...(company.url && { url: company.url }),
+        ...(company.logo && { logo: `${SITE_URL}${company.logo.src}` }),
+      })),
+      ...(SOCIAL_PROFILES.length > 0 && { sameAs: SOCIAL_PROFILES.map((profile) => profile.url) }),
+    },
+    {
+      "@type": "WebSite",
+      "@id": WEBSITE_ID,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: DESCRIPTION,
+      inLanguage: "en-US",
+      publisher: { "@id": ORG_ID },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: TITLE,
+      description: DESCRIPTION,
+      inLanguage: "en-US",
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": ORG_ID },
+      primaryImageOfPage: { "@type": "ImageObject", url: `${SITE_URL}${SHARE_IMAGE.url}` },
+    },
+  ],
+};
+
 export default function HomePage() {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA).replace(/</g, "\\u003c") }}
       />
 
       <SiteHeader />

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { FOOTER_COMPANIES } from "@/lib/companies";
-import { ADDRESS, EMAIL, LOCATION, LOGO, PHONE, PHONE_DISPLAY, SITE_NAME } from "@/lib/site";
+import { ADDRESS, EMAIL, LOCATION, LOGO, PHONE, PHONE_DISPLAY, SITE_NAME, SOCIAL_PROFILES } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -37,6 +37,16 @@ export function SiteFooter() {
               <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
             </address>
           </div>
+          {SOCIAL_PROFILES.length > 0 && (
+            <div className="footer-col">
+              <h3>Follow</h3>
+              {SOCIAL_PROFILES.map((profile) => (
+                <a key={profile.url} href={profile.url} target="_blank" rel="noopener me">
+                  {profile.label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
         <div className="footer-bottom">
           <span>{`© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.`}</span>
