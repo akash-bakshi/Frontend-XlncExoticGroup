@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { RootDocument } from "@/app/_components/RootDocument";
+import { Bot } from "@/components/site/Bot";
 import "@/styles/site.css";
 
 // Runs before paint: /#tools and friends open their standalone pages.
@@ -16,6 +17,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       }
     >
       {children}
+      <Bot />
     </RootDocument>
   );
 }
