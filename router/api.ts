@@ -12,6 +12,8 @@ export interface Session {
   first_name?: string | null;
   last_name?: string | null;
   tools?: string[];
+  tool_links?: Record<string, string | null>;
+  tool_names?: Record<string, string>;
 }
 
 interface LoginResult {

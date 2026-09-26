@@ -6,6 +6,7 @@ import {
   activate,
   remove,
   setPassword,
+  setToolLink,
   setTools,
   suspend,
   type Employee,
@@ -16,10 +17,11 @@ import { bad, Button, Hint, plural, StatusMessage, Tag, type Message } from "./u
 // Columns in the employee table; every strip that opens under a row spans them all.
 const COLS = 6;
 
-type StripKind = "tools" | "pass" | "del";
+type StripKind = "tools" | "link" | "pass" | "del";
 
 const STRIP_IDS: Record<StripKind, string> = {
   tools: "toolEditRow",
+  link: "linkEditRow",
   pass: "passEditRow",
   del: "delEditRow",
 };
@@ -31,6 +33,7 @@ interface StripProps {
   tools: Tool[];
   close: () => void;
   run: (promise: Promise<unknown>) => void;
+  reloadTools: () => void;
 }
 
 function Strip({ kind, emp, className = "p-edit-cell", onEscape, children }: {
@@ -89,6 +92,71 @@ function ToolsStrip({ emp, tools, close, run }: StripProps) {
         <Button className="p-btn p-btn-sm" onClick={save}>
           Save tools
         </Button>
+        <Button onClick={close}>Cancel</Button>
+      </div>
+    </Strip>
+  );
+}
+
+// A link belongs to the tool, so changing it here changes it for everyone who has that tool.
+function LinkStrip({ emp, tools, close, run, reloadTools }: StripProps) {
+  const cellRef = useRef<HTMLDivElement>(null);
+  const [note, setNote] = useState<Message>(null);
+  const held = tools.filter((tool) => emp.tools.includes(tool.slug));
+
+  const save = () => {
+    const inputs = cellRef.current?.querySelectorAll<HTMLInputElement>("[data-edit-link]") ?? [];
+    const changed: { slug: string; link: string }[] = [];
+    for (const input of Array.from(inputs)) {
+      const link = input.value.trim();
+      if (!/^https?:\/\/[^\s/]+/i.test(link)) {
+        setNote(bad("Every link must start with http:// or https://."));
+        input.focus();
+        return;
+      }
+      if (link !== (input.defaultValue || "").trim()) changed.push({ slug: input.name, link });
+    }
+    close();
+    if (changed.length) {
+      run(Promise.all(changed.map((c) => setToolLink(c.slug, c.link))).finally(reloadTools));
+    }
+  };
+
+  return (
+    <Strip kind="link" emp={emp} onEscape={close}>
+      <p className="p-edit-head">Tool links for {emp.email}</p>
+      <p className="p-edit-lede">
+        Change where a tool opens. A link belongs to the tool, so the new one applies to everyone who has it.
+      </p>
+      {held.length ? (
+        <div className="p-row" ref={cellRef}>
+          {held.map((tool) => (
+            <div key={tool.slug} className="p-field">
+              <label htmlFor={`link-${tool.slug}`}>{tool.name}</label>
+              <input
+                type="url"
+                id={`link-${tool.slug}`}
+                name={tool.slug}
+                data-edit-link=""
+                defaultValue={tool.link ?? ""}
+                placeholder="https://tool.example.com"
+                spellCheck={false}
+                autoCapitalize="none"
+                maxLength={2048}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Hint>{emp.email} has no tools yet — give them one with Edit tools.</Hint>
+      )}
+      <StatusMessage message={note} live={false} />
+      <div className="p-actions p-edit-actions">
+        {held.length > 0 && (
+          <Button className="p-btn p-btn-sm" onClick={save}>
+            Save links
+          </Button>
+        )}
         <Button onClick={close}>Cancel</Button>
       </div>
     </Strip>
@@ -169,6 +237,7 @@ function DeleteStrip({ emp, close, run }: StripProps) {
 
 const STRIPS: Record<StripKind, (props: StripProps) => ReactNode> = {
   tools: ToolsStrip,
+  link: LinkStrip,
   pass: PasswordStrip,
   del: DeleteStrip,
 };
@@ -206,6 +275,7 @@ function EmployeeRow({ emp, toolName, onStrip, run }: RowProps) {
       <td>
         <div className="p-row-actions">
           <Button onClick={() => onStrip("tools")}>Edit tools</Button>
+          <Button onClick={() => onStrip("link")}>Edit link</Button>
           <Button onClick={() => onStrip("pass")}>Reset password</Button>
           {active ? (
             <Button onClick={() => run(suspend(emp.email, emp.company_slug))}>Suspend</Button>
@@ -227,10 +297,11 @@ interface EmployeeTableProps {
   note: string;
   message: Message;
   run: (promise: Promise<unknown>) => void;
+  reloadTools: () => void;
 }
 
 // Keyed by the console on every data load, so an open strip closes like a redraw.
-export function EmployeeTable({ employees, tools, note, message, run }: EmployeeTableProps) {
+export function EmployeeTable({ employees, tools, note, message, run, reloadTools }: EmployeeTableProps) {
   const [strip, setStrip] = useState<{ kind: StripKind; key: string } | null>(null);
   const close = () => setStrip(null);
 
@@ -273,7 +344,7 @@ export function EmployeeTable({ employees, tools, note, message, run }: Employee
               return (
                 <Fragment key={key}>
                   <EmployeeRow emp={emp} toolName={toolName} onStrip={(kind) => toggle(kind, key)} run={run} />
-                  {StripView && <StripView emp={emp} tools={tools} close={close} run={run} />}
+                  {StripView && <StripView emp={emp} tools={tools} close={close} run={run} reloadTools={reloadTools} />}
                 </Fragment>
               );
             })}

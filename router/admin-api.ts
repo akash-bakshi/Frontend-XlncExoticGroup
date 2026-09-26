@@ -4,6 +4,7 @@ import { send } from "./api";
 export interface Tool {
   slug: string;
   name: string;
+  link?: string | null;
   company_slug?: string | null;
 }
 
@@ -23,10 +24,16 @@ function employeePath(email: string, companySlug: string | null, suffix = ""): s
 
 export const tools = () => send<Tool[]>("/api/tools");
 
-export const createTool = (slug: string, name: string, companySlug: string | null = null) =>
+export const createTool = (slug: string, name: string, link: string, companySlug: string | null = null) =>
   send<Tool>("/api/tools", {
     method: "POST",
-    body: { slug, name, company_slug: companySlug || null },
+    body: { slug, name, link, company_slug: companySlug || null },
+  });
+
+export const setToolLink = (slug: string, link: string) =>
+  send<Tool>(`/api/tools/${encodeURIComponent(slug)}`, {
+    method: "PATCH",
+    body: { link },
   });
 
 export const deleteTool = (slug: string) =>

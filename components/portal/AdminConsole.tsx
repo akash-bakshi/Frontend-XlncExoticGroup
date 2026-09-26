@@ -97,6 +97,7 @@ export function AdminConsole() {
         note={note}
         message={listMessage}
         run={run}
+        reloadTools={loadTools}
       />
     </PortalShell>
   );

@@ -3,7 +3,7 @@
 import { useSession } from "@/hooks/useSession";
 import { PortalShell } from "./PortalShell";
 
-// "inventory-count" -> "Inventory Count", for the tile heading.
+// "inventory-count" -> "Inventory Count", only for a tool whose name did not come back.
 const pretty = (slug: string) =>
   slug
     .split("-")
@@ -17,6 +17,8 @@ export function EmployeeHome() {
   const name = [session.first_name || "", session.last_name || ""].join(" ").trim();
   const company = session.company || "";
   const tools = session.tools ?? [];
+  const links = session.tool_links ?? {};
+  const names = session.tool_names ?? {};
 
   const title = (
     <>
@@ -49,9 +51,13 @@ export function EmployeeHome() {
       <ul className="p-tiles" id="tiles">
         {tools.map((slug) => (
           <li key={slug}>
-            <a className="p-tile" href={`/${slug}.html`}>
-              <span className="p-tile-name">{pretty(slug)}</span>
-              <span className="p-tile-slug">{slug}</span>
+            {/* Opens the link the admin saved for this tool; tools from before links existed keep their old page. */}
+            <a
+              className="p-tile"
+              href={links[slug] || `/${slug}.html`}
+              {...(links[slug] && { target: "_blank", rel: "noopener noreferrer" })}
+            >
+              <span className="p-tile-name">{names[slug] || pretty(slug)}</span>
             </a>
           </li>
         ))}

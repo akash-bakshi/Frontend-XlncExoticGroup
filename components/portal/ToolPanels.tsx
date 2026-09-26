@@ -7,6 +7,7 @@ import { bad, Button, Hint, ok, plural, StatusMessage, type Message } from "./ui
 export function CreateToolPanel({ onCreated }: { onCreated: () => void }) {
   const slugRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<Message>(null);
 
@@ -14,17 +15,23 @@ export function CreateToolPanel({ onCreated }: { onCreated: () => void }) {
     event.preventDefault();
     const slug = slugRef.current!.value.trim().toLowerCase();
     const name = nameRef.current!.value.trim();
-    if (!slug || !name) {
-      setMessage(bad("Both fields are required."));
+    const link = linkRef.current!.value.trim();
+    if (!slug || !name || !link) {
+      setMessage(bad("All fields are required."));
+      return;
+    }
+    if (!/^https?:\/\/[^\s/]+/i.test(link)) {
+      setMessage(bad("Tool link must start with http:// or https://."));
       return;
     }
 
     setBusy(true);
     try {
-      const tool = await createTool(slug, name, null);
+      const tool = await createTool(slug, name, link, null);
       setMessage(ok(`Created ${tool.name}.`));
       slugRef.current!.value = "";
       nameRef.current!.value = "";
+      linkRef.current!.value = "";
       onCreated();
     } catch (error) {
       setMessage(bad((error as Error).message));
@@ -59,6 +66,22 @@ export function CreateToolPanel({ onCreated }: { onCreated: () => void }) {
               required
             />
             <span className="p-hint">Lowercase, digits, hyphens. Cannot change later.</span>
+          </div>
+        </div>
+        <div className="p-row">
+          <div className="p-field">
+            <label htmlFor="toolLink">Tool link</label>
+            <input
+              ref={linkRef}
+              type="url"
+              id="toolLink"
+              placeholder="https://inventory.example.com"
+              spellCheck={false}
+              autoCapitalize="none"
+              maxLength={2048}
+              required
+            />
+            <span className="p-hint">Where the tool opens. Full URL starting with https://.</span>
           </div>
         </div>
         <div className="p-actions">
