@@ -15,17 +15,11 @@ const ROLES: Record<Role, { label: string; blurb: string }> = {
 
 const HELD_STATUSES = ["Suspended", "Unknown", "WrongDoor"];
 
-// Mirrors the plate's current screen in the address bar; cosmetic only.
-function setHash(name: string) {
-  window.history.replaceState(null, "", `/#${name}`);
-}
-
 function RoleChoice({ onPick }: { onPick: (role: Role) => void }) {
   const firstRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     firstRef.current?.focus();
-    setHash("sign");
   }, []);
 
   const half = (role: Role) => (
@@ -62,7 +56,6 @@ function LoginForm({ role, company, onBack }: { role: Role; company: string | nu
   const [msg, setMsg] = useState({ text: "", held: false, scroll: false });
 
   useEffect(() => {
-    setHash(role);
     userRef.current?.focus();
   }, [role]);
 
@@ -187,10 +180,6 @@ export function LoginPlate() {
   }
 
   useEffect(() => {
-    setHash("tools");
-  }, []);
-
-  useEffect(() => {
     if (!isOpen) return;
     document.body.classList.add("login-open");
     const onKey = (event: KeyboardEvent) => {
@@ -200,7 +189,6 @@ export function LoginPlate() {
     return () => {
       document.body.classList.remove("login-open");
       document.removeEventListener("keydown", onKey);
-      setHash("tools");
       opener?.focus();
     };
   }, [isOpen, opener, close]);

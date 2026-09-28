@@ -65,10 +65,6 @@ export function ResetPasswordForm() {
   const [waitLeft, setWaitLeft] = useState(0);
   const [doneFor, setDoneFor] = useState<string | null>(null);
 
-  useEffect(() => {
-    window.history.replaceState(null, "", "/#admin_change_password");
-  }, []);
-
   // 429 lockout: nothing may be sent until the Retry-After wait has run out.
   useEffect(() => {
     if (waitLeft <= 0) return;
