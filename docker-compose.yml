@@ -1,0 +1,24 @@
+# The whole stack: this site plus the backend's own compose (postgres + api) from the sibling folder.
+# Run from this folder: docker compose up --build
+include:
+  - ../backend/docker-compose.yml
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        # Container-to-container address; baked into the build's /api rewrites.
+        API_PROXY_TARGET: http://api:8000
+    environment:
+      # Also read at run time by /tools/<name>, which calls the backend directly.
+      API_PROXY_TARGET: http://api:8000
+      # :? stops compose before anything starts, rather than serving a site the backend refuses.
+      FRONTEND_API_KEY: ${FRONTEND_API_KEY:?set FRONTEND_API_KEY in .env}
+    ports:
+      - "3000:3000"
+    # service_healthy, so the first page load never races an api that is still starting.
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

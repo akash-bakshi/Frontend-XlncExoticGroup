@@ -1,0 +1,51 @@
+# Secrets: the image is shared, .env is not. Real values arrive as environment at run time.
+.env
+.env.*
+*.pem
+*.key
+.qbo-tokens.json
+
+# Rebuilt inside the image from package-lock.json and the source.
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Git history, agent tooling and deploy config. Nothing in the image reads them.
+.git
+.gitignore
+.github/
+.claude/
+.vercel/
+
+# Test output.
+coverage/
+playwright-report/
+test-results/
+.playwright-mcp/
+
+# Logs.
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and IDEs.
+.vscode/
+.idea/
+*.swp
+
+# OS and OneDrive clutter.
+.DS_Store
+Thumbs.db
+desktop.ini
+[Dd]esktop.ini
+
+# Docker's own files: copying them in would change the image on every edit for nothing.
+Dockerfile
+.dockerignore
+docker-compose*.yml

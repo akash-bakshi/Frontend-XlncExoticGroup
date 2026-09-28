@@ -8,6 +8,8 @@ if (!process.env.FRONTEND_API_KEY) throw new Error("FRONTEND_API_KEY is not set.
 const legacyPages = ["index", "tools", "admin", "employee", "admin_change_password"];
 
 const nextConfig: NextConfig = {
+  // A self-contained server.js with only the files it needs, which is what the Dockerfile ships.
+  output: "standalone",
   poweredByHeader: false,
   devIndicators: false,
   reactStrictMode: true,
