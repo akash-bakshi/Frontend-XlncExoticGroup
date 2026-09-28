@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Brand } from "@/components/Brand";
-import { ArrowRightIcon } from "@/components/icons";
-import { Galaxy } from "@/components/tools/Galaxy";
+import { ChevronRightIcon } from "@/components/icons";
+import { CompanyGrid } from "@/components/tools/CompanyGrid";
 import { LoginProvider } from "@/components/tools/LoginContext";
 import { LoginPlate } from "@/components/tools/LoginPlate";
 import { ToolsFooter } from "@/components/tools/ToolsFooter";
@@ -13,52 +13,44 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#000000",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
-
-const STAR_LAYERS = ["star-white-a", "star-white-b", "star-gold-a", "star-gold-b", "star-pink", "star-bright"];
 
 export default function ToolsPage() {
   return (
     <LoginProvider>
-      <div className="map-bg" aria-hidden="true">
-        <span className="map-frame map-frame-full">
-          <span className="map-pan"></span>
-        </span>
-      </div>
-
-      <div className="starfield" aria-hidden="true">
-        {STAR_LAYERS.map((layer) => (
-          <span key={layer} className={`star-layer ${layer}`}></span>
-        ))}
-      </div>
-
       <header className="tools-bar">
         <div className="container tools-bar-in">
           <Brand href={ROUTES.home} />
-          <a className="btn btn-primary tools-exit" href={ROUTES.home} aria-label="Home">
-            <span className="tools-exit-word">Home</span>
-            <ArrowRightIcon />
+          <a className="tools-exit" href={ROUTES.home}>
+            Home
+            <ChevronRightIcon />
           </a>
         </div>
       </header>
 
       <main className="tools-page">
-        <div className="container">
-          <div className="tools-head">
-            <h1 className="tools-title">
-              Nine Companies. <span>One Root</span>
-            </h1>
-          </div>
-          <Galaxy />
-        </div>
+        <section className="tools-hero container">
+          <p className="tools-eyebrow">Internal Access</p>
+          <h1 className="tools-title">
+            Ten companies.
+            <br />
+            <span>One root.</span>
+          </h1>
+          <p className="tools-lede">Choose a company to sign in to its tools.</p>
+        </section>
+
+        <section className="container">
+          <CompanyGrid />
+        </section>
       </main>
 
       <ToolsFooter />
 
-      <div id="loginCardMount">
-        <LoginPlate />
-      </div>
+      <LoginPlate />
     </LoginProvider>
   );
 }

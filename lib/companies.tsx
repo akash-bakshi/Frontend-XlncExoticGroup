@@ -145,6 +145,18 @@ export const COMPANIES: Company[] = [
       </span>
     ),
   },
+  {
+    slug: "axolo-ai",
+    name: "Axolo AI",
+    url: "https://axolo.ai",
+    domain: "axolo.ai",
+    trayLabel: "Axolo AI — visit axolo.ai",
+    coinClass: "coin-fill coin-dark coin-black",
+    icon: { src: "/assets/logos/icon/axolo-ai-coin.png", width: 512, height: 512 },
+    tag: "Artificial Intelligence",
+    description: "Applied AI products and automation built for modern businesses.",
+    logo: { src: "/assets/logos/axolo-ai.png", width: 840, height: 112, alt: "Axolo AI" },
+  },
 ];
 
 export const FOOTER_COMPANIES = [

@@ -10,7 +10,7 @@ export function SiteFooter() {
           <div className="footer-brand">
             <Image src={LOGO.src} width={LOGO.width} height={LOGO.height} alt={SITE_NAME} />
             <p>
-              A San Diego venture group building, backing, and scaling exceptional companies across six
+              A San Diego venture group building, backing, and scaling exceptional companies across seven
               industries. Dreams to reality.
             </p>
           </div>

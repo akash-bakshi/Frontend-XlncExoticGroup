@@ -22,7 +22,7 @@ import {
 
 const TITLE = "XLNC Exotic Group | San Diego Venture Group — We Build, Back & Scale";
 const SHARE_TITLE = "XLNC Exotic Group — A San Diego Venture Group";
-const SHARE_DESCRIPTION = "We build, back, and scale exceptional companies across six industries.";
+const SHARE_DESCRIPTION = "We build, back, and scale exceptional companies across seven industries.";
 const SHARE_IMAGE = {
   url: "/assets/video/sd-hero.jpg",
   width: 1920,
@@ -90,8 +90,8 @@ const PILLARS = [
 ];
 
 const STATS = [
-  { num: "09", label: "Companies" },
-  { num: "06", label: "Industries" },
+  { num: "10", label: "Companies" },
+  { num: "07", label: "Industries" },
   { num: "01", label: "Standard — Excellence" },
   { num: "SD", label: "San Diego, CA" },
 ];
@@ -276,12 +276,12 @@ export default function HomePage() {
             <Reveal className="sec-head center reveal">
               <span className="eyebrow center">The Portfolio</span>
               <h2>
-                Nine companies.
+                Ten companies.
                 <br />
                 One relentless standard.
               </h2>
               <p>
-                A group spanning six industries — each brand its own business, all built to the same standard of
+                A group spanning seven industries — each brand its own business, all built to the same standard of
                 excellence. Select a company to visit its site.
               </p>
             </Reveal>

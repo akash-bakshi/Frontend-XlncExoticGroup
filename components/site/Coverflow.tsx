@@ -267,7 +267,7 @@ export function Coverflow({ companies }: { companies: Company[] }) {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
       >
-        <ul ref={trackRef} className="cf-track" id="cfTrack" aria-label="Nine portfolio companies">
+        <ul ref={trackRef} className="cf-track" id="cfTrack" aria-label={`${n} portfolio companies`}>
           {companies.map((company) => (
             <PortfolioCard key={company.slug} company={company} />
           ))}
