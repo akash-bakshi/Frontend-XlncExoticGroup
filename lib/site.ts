@@ -25,7 +25,7 @@ export const SOCIAL_PROFILES: { label: string; url: string }[] = [];
 export const FONTS_URL =
   "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Jost:wght@300;400;500;600&display=swap";
 
-export const LOGO = { src: "/assets/logos/xlnc-exotic-group.png", width: 247, height: 256 };
+export const LOGO = { src: "/assets/logos/icon/xlnc-exotic-group.png", width: 512, height: 512 };
 export const LOGO_MARK = { src: "/assets/logos/icon/xlnc-exotic-group.png", width: 512, height: 512 };
 
 export const ROUTES = {
